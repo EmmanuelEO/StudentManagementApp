@@ -88,7 +88,7 @@ function App() {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     return <Layout style={{ minHeight: '100vh' }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+        <Sider theme={theTheme === "black" ? "dark" : "light"} collapsible collapsed={collapsed} onCollapse={setCollapsed}>
             <div className="logo" />
             <Menu theme={theTheme === "black" ? "dark" : "light"} defaultSelectedKeys={['1']} mode="inline">
                 <Menu.Item key="1" icon={<BulbFilled />} onClick={() => setTheTheme("light")}>
