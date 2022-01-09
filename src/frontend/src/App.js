@@ -52,7 +52,7 @@ function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [student, setStudent] = useState('Tom')
-    const [theTheme, setTheTheme] = useState("black")
+    const [theTheme, setTheTheme] = useState("light")
 
     const fetchStudents = () => retrieveAllStudents()
       .then( data => {
