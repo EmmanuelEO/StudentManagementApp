@@ -1,6 +1,7 @@
 import {Drawer, Input, Col, Select, Form, Row, Button, Spin} from 'antd';
 import React, {useState} from "react";
 import { addNewStudent } from "./client";
+import { successNotification, errorNotification } from "./AntdNotification";
 
 const {Option} = Select;
 
@@ -18,6 +19,8 @@ function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudents}) {
             () => {
                console.log("The student has been added to your database.");
                onClose();
+               successNotification("Success! The student has been added",
+                   `${student.name} was added successfully to the system`)
                fetchStudents();
             }).catch(err => {
                 console.log(err)

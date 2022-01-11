@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { retrieveAllStudents } from "./client";
-import {Button, Empty, Spin} from 'antd';
+import { retrieveAllStudents, deleteStudent } from "./client";
+import {Avatar, Badge, Button, Empty, Popconfirm, Spin, Tag, Radio} from 'antd';
 import {BulbFilled, BulbOutlined, DownloadOutlined, LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import studentDrawerForm from "./StudentDrawerForm";
 
@@ -22,11 +22,40 @@ import React from "react";
 
 import './App.css';
 import StudentDrawerForm from "./StudentDrawerForm";
+import {successNotification} from "./AntdNotification";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const columns = [
+const AnAvatar = ({ name }) => {
+    // This means that the name is empty, and we return the empty Avatar
+    let trimmed_name = name.trim();
+    if (trimmed_name.length === 0) {
+        return <Avatar icon={<UserOutlined />} />
+    } else {
+        const split = trimmed_name.split(' ')
+        if (split.length === 1) {
+            return <Avatar>{name.charAt(0)}</Avatar>
+        } else {
+            return <Avatar>{`${split[0].charAt(0)}${split[1].charAt(0)}`}</Avatar>
+        }
+    }
+}
+
+const removeStudent = (studentID, functionCallback) => {
+    deleteStudent(studentID).then(() => {
+        successNotification("Success! The student has been deleted", `Student with ID: ${studentID} has been removed.`);
+        functionCallback();
+    });
+}
+
+const columns = fetchStudents => [
+    {
+        title: '',
+        dataIndex: 'avatar',
+        key: 'avatar',
+        render: (text, student) => <AnAvatar name={student.name}/>
+    },
     {
         title: 'ID',
         dataIndex: 'id',
@@ -47,6 +76,23 @@ const columns = [
         dataIndex: 'gender',
         key: 'gender',
     },
+    {
+        title: 'Actions',
+        key: 'actions',
+        render: (text, student) =>
+            <Radio.Group>
+                <Popconfirm
+                    title={`Are you sure you want to remove ${student.name} from the student table?`}
+                    placement='topRight'
+                    onConfirm={() => removeStudent(student.id, fetchStudents)}
+                    okText='Yes'
+                    cancelText='No'
+                >
+                    <Radio.Button value="small">Delete</Radio.Button>
+                </Popconfirm>
+                <Radio.Button value="small">Edit</Radio.Button>
+            </Radio.Group>
+    }
 ];
 
 function App() {
@@ -85,14 +131,18 @@ function App() {
             <Table
             style={{ border: `1px solid ${theTheme}` }}
             dataSource={students}
-            columns={columns}
+            columns={columns(fetchStudents)}
             bordered
-            title={() =>
+            title={() => <>
                 <Button
                     onClick = {() => setShowDrawer(!showDrawer)}
                     type="primary" shape="round" icon={<PlusOutlined />} size='large'>
                 Add New Student
-            </Button>}
+            </Button>
+                <br /><br />
+                <Tag id="tag-1">Number of students: </Tag>
+                <Badge count={students.length} className="site-badge-count-4"/>
+                </>}
             pagination={{ pageSize: 50 }}
             scroll={{ y: 240 }}
             rowKey={student => student.id}

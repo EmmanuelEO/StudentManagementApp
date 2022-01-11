@@ -17,6 +17,31 @@
   background: #fff;
 }
 
+#tag-1 {
+  border-radius: 50px;
+  margin-left: 13px;
+  padding-top: 7px;
+  padding-left: 4px;
+  top: -30px;
+  font-size: 13px;
+  height: 39px;
+  width: 135px;
+  margin-right: 0px;
+}
+
+.site-badge-count-4 .ant-badge-count {
+  margin-left: 6px;
+  color: #525050;
+  height: 27px;
+  width: 27px;
+  font-size: 15px;
+  text-align: center;
+  padding: 3px;
+  background-color: #fff;
+  border-radius: 50px;
+  box-shadow: 0 0 0 1px #d9d9d9 inset;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

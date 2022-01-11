@@ -1,4 +1,3 @@
-// import fetch from "unfetch";
 import axios from "axios";
 
 export const retrieveAllStudents = async () => {
@@ -22,6 +21,14 @@ export const addNewStudent = async student => {
         return data;
     } catch(error) {
         return Promise.reject(error)
+    }
+}
+
+export const deleteStudent = async studentID => {
+    try {
+        await axios.delete(`/api/v1/students/${studentID}`)
+    } catch (error) {
+        return Promise.reject(error);
     }
 }
 
