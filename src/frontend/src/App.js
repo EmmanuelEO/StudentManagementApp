@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { retrieveAllStudents } from "./client";
-import {Empty, Spin} from 'antd';
-import {BulbFilled, BulbOutlined, LoadingOutlined} from '@ant-design/icons';
+import {Button, Empty, Spin} from 'antd';
+import {BulbFilled, BulbOutlined, DownloadOutlined, LoadingOutlined, PlusOutlined} from '@ant-design/icons';
+import studentDrawerForm from "./StudentDrawerForm";
 
 import {
     Layout,
@@ -20,6 +21,7 @@ import {
 import React from "react";
 
 import './App.css';
+import StudentDrawerForm from "./StudentDrawerForm";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -53,6 +55,7 @@ function App() {
     const [loading, setLoading] = useState(true);
     const [student, setStudent] = useState('Tom')
     const [theTheme, setTheTheme] = useState("light")
+    const [showDrawer, setShowDrawer] = useState(false);
 
     const fetchStudents = () => retrieveAllStudents()
       .then( data => {
@@ -63,7 +66,7 @@ function App() {
 
     useEffect(() => {
       console.log("I'm here");
-      fetchStudents();
+      fetchStudents().then(r => {});
     }, [])
 
     const displayStudents = () => {
@@ -73,16 +76,28 @@ function App() {
         if (students.length <= 0) {
             return <Empty />;
         }
-        return <Table
+        return <>
+            <StudentDrawerForm
+                showDrawer={showDrawer}
+                setShowDrawer={setShowDrawer}
+                fetchStudents={fetchStudents}
+            />
+            <Table
             style={{ border: `1px solid ${theTheme}` }}
             dataSource={students}
             columns={columns}
             bordered
-            title={() => 'Header'}
+            title={() =>
+                <Button
+                    onClick = {() => setShowDrawer(!showDrawer)}
+                    type="primary" shape="round" icon={<PlusOutlined />} size='large'>
+                Add New Student
+            </Button>}
             pagination={{ pageSize: 50 }}
             scroll={{ y: 240 }}
             rowKey={student => student.id}
         />
+        </>
     }
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
