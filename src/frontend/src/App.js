@@ -22,7 +22,7 @@ import React from "react";
 
 import './App.css';
 import StudentDrawerForm from "./StudentDrawerForm";
-import {successNotification} from "./AntdNotification";
+import {errorNotification, successNotification} from "./AntdNotification";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -46,12 +46,16 @@ const removeStudent = (studentID, functionCallback) => {
     deleteStudent(studentID).then(() => {
         successNotification("Success! The student has been deleted", `Student with ID: ${studentID} has been removed.`);
         functionCallback();
+    }).catch(err => {
+        console.log(err.response);
+        console.log(err.response.data.message);
+        errorNotification("There was an error!", `${err.response.data.message} - ${err.response.status} [${err.response.statusText}]`)
     });
 }
 
 const columns = fetchStudents => [
     {
-        title: '',
+        title: 'Initials',
         dataIndex: 'avatar',
         key: 'avatar',
         render: (text, student) => <AnAvatar name={student.name}/>
@@ -108,7 +112,11 @@ function App() {
         console.log(data);
         setStudents(data);
         setLoading(false);
-    });
+      }).catch(err => {
+          console.log(err.response);
+          console.log(err.response.data.message);
+          errorNotification("There was an error!", `${err.response.data.message} - ${err.response.status} [${err.response.statusText}]`)
+      }).finally(() => setLoading(false));
 
     useEffect(() => {
       console.log("I'm here");
@@ -119,8 +127,22 @@ function App() {
         if (loading) {
             return <Spin indicator={antIcon} />
         }
+        // For the case where there are no students in the database
         if (students.length <= 0) {
-            return <Empty />;
+            return <>
+                <Button
+                    style={{ backgroundColor: 'dodgerblue' }}
+                    onClick={() => setShowDrawer(!showDrawer)}
+                    type="secondary" shape="round" icon={<PlusOutlined/>} size="large">
+                    Add New Student
+                </Button>
+                <StudentDrawerForm
+                    showDrawer={showDrawer}
+                    setShowDrawer={setShowDrawer}
+                    fetchStudents={fetchStudents}
+                />
+                <Empty/>
+            </>
         }
         return <>
             <StudentDrawerForm
