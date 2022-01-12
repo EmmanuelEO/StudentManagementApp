@@ -123,6 +123,7 @@ function App() {
       fetchStudents().then(r => {});
     }, [])
 
+    // function to display students
     const displayStudents = () => {
         if (loading) {
             return <Spin indicator={antIcon} />
