@@ -29,4 +29,9 @@ public class StudentController {
         studentService.deleteStudent(studentID);
     }
 
+    @PutMapping(path = "{studentID}")
+    public void editStudent(@PathVariable("studentID") Long studentID, @Valid @RequestBody Student newStudent) {
+        studentService.editStudent(studentID, newStudent);
+    }
+
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { retrieveAllStudents, deleteStudent } from "./client";
+import { retrieveAllStudents, deleteStudent, editStudent } from "./client";
 import {Avatar, Badge, Button, Empty, Popconfirm, Spin, Tag, Radio} from 'antd';
 import {BulbFilled, BulbOutlined, DownloadOutlined, LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import studentDrawerForm from "./StudentDrawerForm";
@@ -42,6 +42,17 @@ const AnAvatar = ({ name }) => {
     }
 }
 
+const updateStudent = (studentID, student, functionCallback) => {
+    editStudent(studentID, student).then(() => {
+        successNotification(`Success! You have successfully edited the information of student ${studentID}.`);
+        functionCallback();
+    }).catch(err => {
+        console.log(err.response);
+        console.log(err.response.data.message);
+        errorNotification("There was an error!", `${err.response.data.message} - ${err.response.status} [${err.response.statusText}]`)
+    })
+}
+
 const removeStudent = (studentID, functionCallback) => {
     deleteStudent(studentID).then(() => {
         successNotification("Success! The student has been deleted", `Student with ID: ${studentID} has been removed.`);
@@ -53,52 +64,6 @@ const removeStudent = (studentID, functionCallback) => {
     });
 }
 
-const columns = fetchStudents => [
-    {
-        title: 'Initials',
-        dataIndex: 'avatar',
-        key: 'avatar',
-        render: (text, student) => <AnAvatar name={student.name}/>
-    },
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Email',
-        dataIndex: 'email',
-        key: 'email',
-    },
-    {
-        title: 'Gender',
-        dataIndex: 'gender',
-        key: 'gender',
-    },
-    {
-        title: 'Actions',
-        key: 'actions',
-        render: (text, student) =>
-            <Radio.Group>
-                <Popconfirm
-                    title={`Are you sure you want to remove ${student.name} from the student table?`}
-                    placement='topRight'
-                    onConfirm={() => removeStudent(student.id, fetchStudents)}
-                    okText='Yes'
-                    cancelText='No'
-                >
-                    <Radio.Button value="small">Delete</Radio.Button>
-                </Popconfirm>
-                <Radio.Button value="small">Edit</Radio.Button>
-            </Radio.Group>
-    }
-];
-
 function App() {
     const [students, setStudents] = useState([]);
     const [collapsed, setCollapsed] = useState(false);
@@ -106,6 +71,66 @@ function App() {
     const [student, setStudent] = useState('Tom')
     const [theTheme, setTheTheme] = useState("light")
     const [showDrawer, setShowDrawer] = useState(false);
+    const [tempStudent, setTempStudent] = useState({});
+
+    const columns = fetchStudents => [
+        {
+            title: 'Initials',
+            dataIndex: 'avatar',
+            key: 'avatar',
+            render: (text, student) => <AnAvatar name={student.name}/>
+        },
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (text, student) =>
+                <Radio.Group>
+                    <Popconfirm
+                        title={`Are you sure you want to remove ${student.name} from the student table?`}
+                        placement='topRight'
+                        onConfirm={() => removeStudent(student.id, fetchStudents)}
+                        okText='Yes'
+                        cancelText='No'
+                    >
+                        <Radio.Button value="small">Delete</Radio.Button>
+                    </Popconfirm>
+                    <Popconfirm
+                        title={`Are you sure you want to edit ${student.name} from the student table?`}
+                        placement='topLeft'
+                        onConfirm={() => {
+                            setShowDrawer(!showDrawer);
+                            setTempStudent(student);
+                            console.log(tempStudent.id, tempStudent)
+                            displayStudents();
+                        }}
+                        okText='Yes'
+                        cancelText='No'
+                    >
+                        <Radio.Button value="small">Edit</Radio.Button>
+                    </Popconfirm>
+                </Radio.Group>
+        }
+    ];
 
     const fetchStudents = () => retrieveAllStudents()
       .then( data => {
@@ -119,7 +144,6 @@ function App() {
       }).finally(() => setLoading(false));
 
     useEffect(() => {
-      console.log("I'm here");
       fetchStudents().then(r => {});
     }, [])
 
@@ -141,15 +165,20 @@ function App() {
                     showDrawer={showDrawer}
                     setShowDrawer={setShowDrawer}
                     fetchStudents={fetchStudents}
+                    add={true}
                 />
                 <Empty/>
             </>
         }
+        console.log("Here: ", tempStudent)
         return <>
             <StudentDrawerForm
                 showDrawer={showDrawer}
                 setShowDrawer={setShowDrawer}
                 fetchStudents={fetchStudents}
+                edit={true}
+                student={tempStudent}
+                student_id={tempStudent && tempStudent.id}
             />
             <Table
             style={{ border: `1px solid ${theTheme}` }}

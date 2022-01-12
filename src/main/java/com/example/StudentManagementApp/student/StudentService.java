@@ -33,4 +33,18 @@ public class StudentService {
         }
         studentRepo.deleteById(studentID);
     }
+
+    public Student editStudent(Long studentID, Student newStudent) {
+        Boolean existsByID = studentRepo.existsById(studentID);
+        if (!existsByID) {
+            throw new StudentNotFoundException("The student with ID " + studentID + " that you want to edit does not exist.");
+        }
+        return studentRepo.findById(studentID).map(
+                student -> {
+                    student.setName(newStudent.getName());
+                    student.setEmail(newStudent.getEmail());
+                    student.setGender(newStudent.getGender());
+                    return studentRepo.save(student);
+                }).orElseGet(() -> studentRepo.save(newStudent));
+    }
 }

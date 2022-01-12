@@ -1,23 +1,27 @@
 import {Drawer, Input, Col, Select, Form, Row, Button, Spin} from 'antd';
 import React, {useState} from "react";
-import { addNewStudent } from "./client";
+import { addNewStudent, editStudent } from "./client";
 import { successNotification, errorNotification } from "./AntdNotification";
 
 const {Option} = Select;
 
 const antIcon = <Spin style={{ fontSize: 24 }} />
 
-function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudents}) {
+function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudents, edit, add, student, student_id}) {
+    const oldStudent = student;
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [gender, setGender] = useState("");
+
+
     const onClose = () => setShowDrawer(false);
     const [loading, setLoading] = useState(false);
 
     const onFinish = student => {
         setLoading(true);
-        console.log(JSON.stringify(student, null, 2));
-        addNewStudent(student)
+        {add && addNewStudent(student)
             .then(
             () => {
-               console.log("The student has been added to your database.");
                onClose();
                successNotification("Success! The student has been added",
                    `${student.name} was added successfully to the system`)
@@ -28,8 +32,21 @@ function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudents}) {
                 errorNotification("There was an error!", `${err.response.data.message} - ${err.response.status} [${err.response.statusText}]`, "bottomLeft")
             }).finally(() => {
                 setLoading(false);
-            })
-
+            })}
+        {edit && editStudent(student_id, student)
+            .then(
+                () => {
+                    onClose();
+                    successNotification("Success! The student has been successfully updated.",
+                        `${student.name} was added successfully to the system`)
+                    fetchStudents();
+                }).catch(err => {
+                console.log(err.response);
+                console.log(err.response.data.message);
+                errorNotification("There was an error!", `${err.response.data.message} - ${err.response.status} [${err.response.statusText}]`, "bottomLeft")
+            }).finally(() => {
+                setLoading(false);
+            })}
     };
 
     const onFinishFailed = errorInfo => {
@@ -55,6 +72,10 @@ function StudentDrawerForm({showDrawer, setShowDrawer, fetchStudents}) {
         }
     >
         <Form layout="vertical"
+              initialValues={{
+                  ["name"]: oldStudent && oldStudent.name,
+                  ["email"]: oldStudent && oldStudent.email
+              }}
               onFinishFailed={onFinishFailed}
               onFinish={onFinish}
               hideRequiredMark>

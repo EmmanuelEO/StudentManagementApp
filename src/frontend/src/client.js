@@ -32,3 +32,17 @@ export const deleteStudent = async studentID => {
     }
 }
 
+export const editStudent = async (studentID, student) => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    console.log(studentID, student);
+    try {
+        await axios.put(`/api/v1/students/${studentID}`, student, config)
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
