@@ -41,7 +41,7 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'CICD is now taking place... :fistbump:'
+          text: 'CICD is now taking place... :eyes:'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -77,7 +77,7 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: ':pizzaparty: pushed eokonkwo/springboot-react-fullstack:${{steps.build_number.outputs.BUILD_NUMBER}} to DockerHub... '
+          text: ':crossed_fingers: pushed eokonkwo/springboot-react-fullstack:${{steps.build_number.outputs.BUILD_NUMBER}} to DockerHub... '
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -99,7 +99,7 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: ':aws: :elasticbeanstalk: The Deployment has started... :300:'
+          text: ':white_check_mark: The Deployment has started... :100:'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
