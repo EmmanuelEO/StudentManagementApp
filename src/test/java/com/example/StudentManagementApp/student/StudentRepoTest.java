@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class StudentRepoTest {
 
+    @Autowired
     private StudentRepo insideTest;
 
     // The two methods below represent testing for the Query that was created in the database
