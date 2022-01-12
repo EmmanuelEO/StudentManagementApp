@@ -20,7 +20,7 @@ env:
   AWS_REGION: us-east-1
   EB_ENVIRONMENT_NAME: Studentmanagementappfullstack-env
   EB_APPLICATION_NAME: StudentManagementApp-Fullstack
-  EB_DEPLOPYMENT_PACKAGE: elasticbeanstalk/docker-compose.yaml
+  EB_DEPLOYMENT_PACKAGE: elasticbeanstalk/docker-compose.yaml
 
 jobs:
   deploy:
