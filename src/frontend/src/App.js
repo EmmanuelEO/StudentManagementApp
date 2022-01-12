@@ -218,7 +218,7 @@ function App() {
                     <p style={{ padding: '1rem', textAlign: 'center' }}>{students.length === 0 && "No Students were found"}</p>
                 </div>
             </Content>
-            <Footer style={{ textAlign: 'center', color: "white", backgroundColor: "black" }}>StudentManagementApp ©2022 By Emmanuel Okonkwo</Footer>
+            <Footer style={{ textAlign: 'center', color: "white", backgroundColor: "black" }}>About: StudentManagementApp ©2022 By Emmanuel Okonkwo</Footer>
         </Layout>}
     </Layout>
 }
