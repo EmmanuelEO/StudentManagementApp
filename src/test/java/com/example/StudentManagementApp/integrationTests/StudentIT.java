@@ -1,8 +1,8 @@
 package com.example.StudentManagementApp.integrationTests;
 
-import com.example.StudentManagementApp.student.Gender;
 import com.example.StudentManagementApp.student.Student;
 import com.example.StudentManagementApp.student.StudentRepo;
+import com.example.StudentManagementApp.student.Gender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +48,8 @@ public class StudentIT {
         // Note: The objectMapper.writeValueAsString() function converts student to a JSON payload content
         ResultActions resultActions = mockMvc
                 .perform(post("/api/v1/students")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(student)));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(student)));
         // Then
         resultActions.andExpect(status().isOk());
         List<Student> students = studentRepo.findAll();
