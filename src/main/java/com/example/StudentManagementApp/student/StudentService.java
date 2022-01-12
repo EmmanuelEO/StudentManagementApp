@@ -27,7 +27,8 @@ public class StudentService {
     }
 
     public void deleteStudent(Long studentID) {
-        if (!studentRepo.existsById(studentID)) {
+        Boolean existsByID = studentRepo.existsById(studentID);
+        if (!existsByID) {
             throw new StudentNotFoundException("The student with ID " + studentID + " that you want to delete does not exist.");
         }
         studentRepo.deleteById(studentID);
