@@ -118,10 +118,10 @@ jobs:
           wait_for_deployment: 60
 
       - uses: 8398a7/action-slack@v3
-          with:
-            status: ${{ job.status }}
-            fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-            text: 'Success!! Deployment to http://studentmanagementappfullstack-env.eba-6ayfszt3.us-east-1.elasticbeanstalk.com is done. :tada:'
-          env:
-            SLACK_WEB_HOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          if: always()
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          text: 'Success!! Deployment to http://studentmanagementappfullstack-env.eba-6ayfszt3.us-east-1.elasticbeanstalk.com is done. :tada:'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
