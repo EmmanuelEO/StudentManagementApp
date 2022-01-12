@@ -4,6 +4,8 @@ import com.example.StudentManagementApp.student.Student;
 import com.example.StudentManagementApp.student.StudentRepo;
 import com.example.StudentManagementApp.student.Gender;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.Faker;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,11 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,12 +41,16 @@ public class StudentIT {
     @Autowired
     private StudentRepo studentRepo;
 
+    private Faker faker = new Faker();
+
     @Test
     void canAddNewStudent() throws Exception {
         // Given
+        String studentName = String.format("%s %s", faker.name().firstName(), faker.name().lastName());
+
         Student student = new Student(
-                "Mathews",
-                "abscd@gmail.com",
+                studentName,
+                String.format("%s@gmail.com", StringUtils.trimAllWhitespace(studentName.toLowerCase())),
                 Gender.FEMALE
         );
         // When
