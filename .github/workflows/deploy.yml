@@ -42,6 +42,8 @@ jobs:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: 'CICD is now taking place... :fistbump:'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       # Using an already-made github checkout actions tag
       - uses: actions/checkout@v2
@@ -62,18 +64,18 @@ jobs:
         uses: docker/login-action@f3364599c6aa293cdc2b8391b1b56d0c30e45c8a
         with:
           username: ${{ env.DOCKER_HUB_USERNAME }}
-          password: secrets.DOCKER_HUB_PASSWORD
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       # Use Maven to clean package and then deploy it to dockerhub
       - name: Maven Clean Package and Push to Dockerhub
         run: |
           ./mvnw --no-transfer-progress clean package -P build-frontend \
-          -Dapp.image.tag=$${{steps.build-number.outputs.BUILD_NUMBER}}
+          -P jib-push-to-dockerhub -Dapp.image.tag=${{ steps.build-number.outputs.BUILD_NUMBER }}
 
       # Sending a message to slack
       - uses: 8398a7/action-slack@v3
         with:
-          status: ${ job.status }}
+          status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: ':pizzaparty: pushed eokonkwo/springboot-react-fullstack:${{steps.build_number.outputs.BUILD_NUMBER}} to DockerHub... '
         env:
@@ -88,17 +90,18 @@ jobs:
           echo -e "Current elasticbeanstalk/docker-compose.yml\n$(cat elasticbeanstalk/docker-compose.yml)"
           git config user.name github-actions
           git config user.email github-actions@github.com
+          git add .
           git commit -m "The new version of the app: ${BUILD_NUMBER}"
           git push
 
       # Sending a message to slack
       - uses: 8398a7/action-slack@v3
         with:
-          status: ${ job.status }}
+          status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           text: ':aws: :elasticbeanstalk: The Deployment has started... :300:'
-          env:
-            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       # Deploying the application to AWS Elastic Beanstalk
       - name: Beanstalk Deploy
@@ -111,14 +114,14 @@ jobs:
           application_name: ${{ env.EB_APPLICATION_NAME }}
           deployment_package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
           version_label: ${{ steps.build-number.outputs.BUILD_NUMBER }}
-          version_description: Version ${{steps.build-number.outputs.BUILD_NUMBER}} has been deployed through girhub actions ${{github.sha}}
+          version_description: Version ${{steps.build-number.outputs.BUILD_NUMBER}} has been deployed through github actions ${{github.sha}}
           wait_for_deployment: 60
 
       - uses:
           with:
             status: ${{ job.status }}
             fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-            text: "Success!! Deployment to http://studentmanagementappfullstack-env.eba-6ayfszt3.us-east-1.elasticbeanstalk.com/ is done. :tada:"
+            text: 'Success!! Deployment to http://studentmanagementappfullstack-env.eba-6ayfszt3.us-east-1.elasticbeanstalk.com is done. :tada:'
           env:
             SLACK_WEB_HOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           if: always()
