@@ -18,8 +18,8 @@ env:
   DOCKER_HUB_USERNAME: eokonkwo
   # Required for AWS & Elastic Beanstalk
   AWS_REGION: us-east-1
-  EB_ENVIRONMENT_NAME: Studentmanagementappfullstack-env
-  EB_APPLICATION_NAME: StudentManagementApp-Fullstack
+  EB_ENVIRONMENT_NAME: Studentmanagerapp-env
+  EB_APPLICATION_NAME: studentManagerApp
   EB_DEPLOYMENT_PACKAGE: elasticbeanstalk/docker-compose.yml
 
 jobs:
@@ -121,7 +121,7 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-          text: 'Success!! Deployment to http://studentmanagementappfullstack-env.eba-6ayfszt3.us-east-1.elasticbeanstalk.com is done. :tada:'
+          text: 'Success!! Deployment to http://Studentmanagerapp-env.eba-9pdzjmkc.us-east-1.elasticbeanstalk.com is done. :tada:'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
