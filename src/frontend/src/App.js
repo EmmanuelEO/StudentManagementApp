@@ -72,6 +72,8 @@ function App() {
     const [theTheme, setTheTheme] = useState("light")
     const [showDrawer, setShowDrawer] = useState(false);
     const [tempStudent, setTempStudent] = useState({});
+    const [add, setAdd] = useState(false);
+    const [edit, setEdit] = useState(false);
 
     const columns = fetchStudents => [
         {
@@ -120,7 +122,8 @@ function App() {
                         onConfirm={() => {
                             setShowDrawer(!showDrawer);
                             setTempStudent(student);
-                            console.log(tempStudent.id, tempStudent)
+                            setEdit(true);
+                            setAdd(false);
                             displayStudents();
                         }}
                         okText='Yes'
@@ -157,7 +160,11 @@ function App() {
             return <>
                 <Button
                     style={{ backgroundColor: 'dodgerblue' }}
-                    onClick={() => setShowDrawer(!showDrawer)}
+                    onClick={() => {
+                        setAdd(true);
+                        setEdit(false);
+                        setShowDrawer(!showDrawer)
+                    }}
                     type="secondary" shape="round" icon={<PlusOutlined/>} size="large">
                     Add New Student
                 </Button>
@@ -165,18 +172,19 @@ function App() {
                     showDrawer={showDrawer}
                     setShowDrawer={setShowDrawer}
                     fetchStudents={fetchStudents}
-                    add={true}
+                    add={add}
+                    edit={edit}
                 />
                 <Empty/>
             </>
         }
-        console.log("Here: ", tempStudent)
         return <>
             <StudentDrawerForm
                 showDrawer={showDrawer}
                 setShowDrawer={setShowDrawer}
                 fetchStudents={fetchStudents}
-                edit={true}
+                add={add}
+                edit={edit}
                 student={tempStudent}
                 student_id={tempStudent && tempStudent.id}
             />
@@ -187,10 +195,14 @@ function App() {
             bordered
             title={() => <>
                 <Button
-                    onClick = {() => setShowDrawer(!showDrawer)}
+                    onClick = {() => {
+                        setAdd(true);
+                        setEdit(false);
+                        setShowDrawer(!showDrawer)
+                    }}
                     type="primary" shape="round" icon={<PlusOutlined />} size='large'>
-                Add New Student
-            </Button>
+                    Add New Student
+                </Button>
                 <br /><br />
                 <Tag id="tag-1">Number of students: </Tag>
                 <Badge count={students.length} className="site-badge-count-4"/>
