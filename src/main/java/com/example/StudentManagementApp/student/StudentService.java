@@ -13,7 +13,7 @@ public class StudentService {
 
     private final StudentRepo studentRepo;
 
-    // To get all the students from the database
+    // To retrieve all the students from the database
     public List<Student> getAllStudents() {
         return studentRepo.findAll();
     }
